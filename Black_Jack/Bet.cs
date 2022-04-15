@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Black_Jack
 {
+    // Без правильной реализации LAST
     internal class Bet
     {
-        // Ставка проходит только один раз. Нужен цикл ?
         public int BudgetAfter { get; set; }
-        public int MyBet { get; set; }
-        public int yourBet(int budget, string stringBet = "", int intBet = 0)
+        private int MyBet;
+        public string? MyOwnBet { get; set; }
+        public int yourBet(int budget, string stringBet, string myLastBet = "", int intBet = 0)
         {
             BudgetAfter = budget;
             switch (stringBet)
@@ -29,27 +30,48 @@ namespace Black_Jack
                     return BudgetAfter;
                     
                 case "MYOWN":
-                    Console.WriteLine("Напишите вашу ставку:");
-                    MyBet = Int32.Parse(Console.ReadLine());
-                    if (MyBet < 10 || MyBet > 500)
-                    {
-                        Console.WriteLine("Недопустимая ставка. Ваша ставка должна быть в диапазоне [10,500]");
-                    goto case "MYOWN";
-                    }
-                    BudgetAfter = BudgetAfter - MyBet;
-                    Console.WriteLine($"Ваша ставка: {MyBet}. На счету осталось: {BudgetAfter}");
-                    return BudgetAfter;
                     
-                case "LAST":
-                    for (int i = 0; BudgetAfter > 0; i++)
+                    Console.WriteLine("Напишите вашу ставку:");
+                    MyOwnBet = Console.ReadLine();
+
+                    bool result = int.TryParse(MyOwnBet, out MyBet);
+                    if (result == true)
                     {
-                        MyBet = 500;
+                        if (MyBet < 10 || MyBet > 500)
+                        {
+                            Console.WriteLine("Недопустимая ставка. Ваша ставка должна быть в диапазоне [10,500]");
+                            goto case "MYOWN";
+                        }
                         BudgetAfter = BudgetAfter - MyBet;
                         Console.WriteLine($"Ваша ставка: {MyBet}. На счету осталось: {BudgetAfter}");
+                        
                     }
-                    return BudgetAfter;  
+                    else
+                    {
+                        Console.WriteLine("Вы не написали ставку!");
+                        goto case "MYOWN";
+                    }
+                    return BudgetAfter;
+
+                case "LAST":
+                    if (myLastBet == "" || myLastBet == null)
+                        goto default;
+                    else if (myLastBet == "MAX")
+                        goto case "MAX";
+                    else if (myLastBet == "MIN")
+                        goto case "MIN";
+                    else if (myLastBet == "MYOWN")
+                        goto case "MYOWN";
+                        break;
+                default:
+                    Console.WriteLine("Вы не написали команду ставки!"); 
+                    break;
             }
             return BudgetAfter;
         }
-    }
+        public string your_Bet(string myBet = "")
+        {
+            return myBet;
+        }
+    } 
 }
